@@ -176,7 +176,7 @@ class WKTBulkLoader:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.removePluginVectorMenu(
+            self.iface.removePluginMenu(
                 self.tr(u'&WKT Bulk Loader'),
                 action)
             self.iface.removeToolBarIcon(action)
@@ -188,8 +188,7 @@ class WKTBulkLoader:
         """Run method that performs all the real work"""
         dir = str(QFileDialog.getExistingDirectory(self.iface.mainWindow(), "Select Directory"))
         if dir:
-            path = dir + '/*.wkt'
-            # http://stackoverflow.com/a/5607708/147530
+            path = os.path.join(dir, '*.wkt')
             params = { 'type' : 'csv', 
             'delimiter' : '\t', 
             'useHeader' : 'No' ,
@@ -199,13 +198,12 @@ class WKTBulkLoader:
             'watchFile' : 'no',
             'crs' : 'epsg:4326'
             }
+            # http://stackoverflow.com/a/5607708/147530
             suffix = urllib.urlencode(params)
-            # suffix = '?type=csv&delimiter=\t&useHeader=No&wktField=field_1&spatialIndex=no&subsetIndex=no&watchFile=no&crs=epsg:4326'
-            # fmt = 'file://%s?type=csv&delimiter=\t&useHeader=No&wktField=field_1&spatialIndex=no&subsetIndex=no&watchFile=no&crs=epsg:4326'
             for x in glob.glob(path):
                 try:
                     arg = path2url(x) + '?' + suffix
-                    self.iface.addVectorLayer(arg, os.path.basename(x), "delimitedtext")
+                    self.iface.addVectorLayer(arg, os.path.basename(x), 'delimitedtext')
                     QgsMessageLog.logMessage(arg, 'WKTBulkLoader')
                 except Exception, e:
-                    QgsMessageLog.logMessage('failed to load ' + arg, 'WKTBulkLoader')
+                    QgsMessageLog.logMessage('failed to load ' + x, 'WKTBulkLoader')
