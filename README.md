@@ -5,7 +5,12 @@ A QGIS plugin to bulk load WKT files
 ```
 make deploy
 ```
-will `build doc transcompile` and install the plugin to the plugins directory
+will `build doc transcompile` and install the plugin to the plugins directory.
+You might need to install `sphinx` if you don't have it already. Install it by doing
+```
+sudo pip install sphinx
+```
+Do not `brew install sphinx` as it installs some other software
 
 ## To Develop
 You may need to add following directories to your paths
@@ -20,9 +25,3 @@ If you already have something in `PYTHONPATH`, add it instead with:
 ```
 export PYTHONPATH="/Applications/QGIS.app/Contents/Resources/python:$PYTHONPATH”
 ```
-
-You might need to install `sphinx` if you don't have it already. Install it by doing
-```
-sudo pip install sphinx
-```
-Do not `brew install sphinx` as it installs some other software
