@@ -24,10 +24,13 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
-import os.path
-import glob
+import os.path, glob, urlparse, urllib
 from qgis.core import *
 
+# http://stackoverflow.com/a/14298190/147530
+def path2url(path):
+    return urlparse.urljoin(
+      'file:', urllib.pathname2url(path))
 
 class WKTBulkLoader:
     """QGIS Plugin Implementation."""
@@ -181,7 +184,23 @@ class WKTBulkLoader:
         dir = str(QFileDialog.getExistingDirectory(self.iface.mainWindow(), "Select Directory"))
         if dir:
             path = dir + '/*.wkt'
-            fmt = 'file://%s?type=csv&delimiter=\t&useHeader=No&wktField=field_1&spatialIndex=no&subsetIndex=no&watchFile=no&crs=epsg:4326'
+            # http://stackoverflow.com/a/5607708/147530
+            params = { 'type' : 'csv', 
+            'delimiter' : '\t', 
+            'useHeader' : 'No' ,
+            'wktField' : 'field_1',
+            'spatialIndex' : 'no',
+            'subsetIndex' : 'no',
+            'watchFile' : 'no',
+            'crs' : 'epsg:4326'
+            }
+            suffix = urllib.urlencode(params)
+            # suffix = '?type=csv&delimiter=\t&useHeader=No&wktField=field_1&spatialIndex=no&subsetIndex=no&watchFile=no&crs=epsg:4326'
+            # fmt = 'file://%s?type=csv&delimiter=\t&useHeader=No&wktField=field_1&spatialIndex=no&subsetIndex=no&watchFile=no&crs=epsg:4326'
             for x in glob.glob(path):
-                self.iface.addVectorLayer(fmt % x, os.path.basename(x), "delimitedtext")
-                QgsMessageLog.logMessage(fmt % x, 'WKTBulkLoader')
+                try:
+                    arg = path2url(x) + '?' + suffix
+                    self.iface.addVectorLayer(arg, os.path.basename(x), "delimitedtext")
+                    QgsMessageLog.logMessage(x, 'WKTBulkLoader')
+                except Exception, e:
+                    QgsMessageLog.logMessage('failed to load ' + x, 'WKTBulkLoader')
