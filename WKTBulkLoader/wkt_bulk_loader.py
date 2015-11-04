@@ -64,9 +64,11 @@ class WKTBulkLoader:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&WKT Bulk Loader')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'WKTBulkLoader')
-        self.toolbar.setObjectName(u'WKTBulkLoader')
+        self.toolbar = None
+        # self.iface.addToolBar will add a new ToolStrip to the Menu
+        # we don't want that so commenting this out
+        # self.toolbar = self.iface.addToolBar(u'WKTBulkLoader')
+        # self.toolbar.setObjectName(u'WKTBulkLoader')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -144,14 +146,17 @@ class WKTBulkLoader:
 
         if whats_this is not None:
             action.setWhatsThis(whats_this)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
+        
+        if add_to_toolbar:            
+            if self.toolbar:
+                self.toolbar.addAction(action)
+            else:            
+                self.iface.addToolBarIcon(action)
 
         if add_to_menu:
             self.iface.addPluginToMenu(
                 self.menu,
-                action)
+                action)                
 
         self.actions.append(action)
 
@@ -201,6 +206,6 @@ class WKTBulkLoader:
                 try:
                     arg = path2url(x) + '?' + suffix
                     self.iface.addVectorLayer(arg, os.path.basename(x), "delimitedtext")
-                    QgsMessageLog.logMessage(x, 'WKTBulkLoader')
+                    QgsMessageLog.logMessage(arg, 'WKTBulkLoader')
                 except Exception, e:
-                    QgsMessageLog.logMessage('failed to load ' + x, 'WKTBulkLoader')
+                    QgsMessageLog.logMessage('failed to load ' + arg, 'WKTBulkLoader')
