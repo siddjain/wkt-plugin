@@ -204,6 +204,6 @@ class WKTBulkLoader:
                 try:
                     arg = path2url(x) + '?' + suffix
                     self.iface.addVectorLayer(arg, os.path.basename(x), 'delimitedtext')
-                    QgsMessageLog.logMessage(arg, 'WKTBulkLoader')
+                    QgsMessageLog.logMessage(arg, u'WKTBulkLoader')
                 except Exception, e:
-                    QgsMessageLog.logMessage('failed to load ' + x, 'WKTBulkLoader')
+                    QgsMessageLog.logMessage(u'failed to load ' + x, u'WKTBulkLoader', QgsMessageLog.CRITICAL)
