@@ -8,7 +8,7 @@
 
 [general]
 name=WKT Bulk Loader
-qgisMinimumVersion=1.7
+qgisMinimumVersion=1.8
 qgisMaximumVersion=9.99
 description=A plugin to bulk load WKT files
 version=0.1
