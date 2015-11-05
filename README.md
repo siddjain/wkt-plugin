@@ -1,18 +1,37 @@
 # WKTBulkLoader
-A QGIS plugin to bulk load WKT files
+A QGIS plugin to bulk load WKT files. Give it a directory and it will load all the `.wkt` files in it.
+![screenshot](screenshot.png)
 
-## To Build
+## To Install
+```
+git clone https://github.com/siddjain/wkt-plugin.git
+```
+then
+### On Mac
+`cd` to `WKTBulkLoader` folder and from there run
 ```
 make deploy
 ```
-will `build doc transcompile` and install the plugin to the plugins directory.
-You might need to install `sphinx` if you don't have it already. Install it by doing
+This will `build doc transcompile` and install the plugin to the plugins directory.
+If you get an error about sphinx, maybe you don't have it on your system. You can install it by doing
 ```
 sudo pip install sphinx
 ```
 Do not `brew install sphinx` as it installs some other software
+### On Windows
+First, you need to determine the plugins directory. When I installed QGIS on Windows 7, my plugins directory was `/c/Users/siddjain/.qgis2`.
+Run following commands from MinGW prompt adjusting the paths as necessary:
+```
+mkdir $HOME/.qgis2/python/plugins
+mkdir $HOME/.qgis2/python/plugins/WKTBulkLoader
+cp -vf *.py $HOME/.qgis2/python/plugins/WKTBulkLoader
+cp -vf *.ui $HOME/.qgis2/python/plugins/WKTBulkLoader
+cp -vf *.txt $HOME/.qgis2/python/plugins/WKTBulkLoader
+cp -vf *.png $HOME/.qgis2/python/plugins/WKTBulkLoader
+cp -vfr i18n $HOME/.qgis2/python/plugins/WKTBulkLoader 
+```
 
-## To Develop
+## Development Notes
 You may need to add following directories to your paths
 ```
 export PATH="/Applications/QGIS.app/Contents/MacOS/bin:$PATH"
